@@ -1,20 +1,14 @@
 package org.processmining.resourcestochasticminer;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.List;
 
 import org.deckfour.xes.model.XLog;
 import org.processmining.acceptingpetrinet.models.AcceptingPetriNet;
-import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetFactory;
 import org.processmining.basicstochasticminer.BasicStochasticMinerParameters;
-import org.processmining.basicstochasticminer.BasicStochasticMinerParametersDefault;
 import org.processmining.basicstochasticminer.solver.Equation;
 import org.processmining.basicstochasticminer.solver.Solver;
-import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.ProMCanceller;
-import org.processmining.optimisingstochasticminer.FakeContext;
 import org.processmining.plugins.inductiveVisualMiner.helperClasses.IteratorWithPosition;
 import org.processmining.plugins.inductiveVisualMiner.helperClasses.IvMModel;
 import org.processmining.plugins.inductiveVisualMiner.ivmlog.IvMLogFiltered;
@@ -22,40 +16,37 @@ import org.processmining.plugins.inductiveVisualMiner.ivmlog.IvMLogFilteredImpl;
 import org.processmining.plugins.inductiveVisualMiner.ivmlog.IvMMove;
 import org.processmining.plugins.inductiveVisualMiner.ivmlog.IvMTrace;
 import org.processmining.plugins.inductiveVisualMiner.plugins.InductiveVisualMinerAlignmentComputation;
-import org.processmining.resourcestochasticminer.plugins.StochasticLabelledPetriNetResourceWeightsExportPlugin;
-import org.processmining.resourcestochasticminer.plugins.StochasticLabelledPetriNetResourceWeightsImportPlugin;
-import org.processmining.xeslite.plugin.OpenLogFileLiteImplPlugin;
 
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TObjectIntHashMap;
 
 public class ResourceStochasticMiner {
 
-	public static void main(String[] args) throws Exception {
-		String name = "BPI_Challenge_2013_incidents";
-
-		PluginContext context = new FakeContext();
-		XLog log = (XLog) new OpenLogFileLiteImplPlugin().importFile(context,
-				new File("/home/sander/Documents/work/svn/60 - inter-trace stochastics - Jana/" + name + ".xes.gz"));
-
-		AcceptingPetriNet net = AcceptingPetriNetFactory.createAcceptingPetriNet();
-		net.importFromStream(context, new FileInputStream(
-				new File("/home/sander/Documents/work/svn/60 - inter-trace stochastics - Jana/" + name + ".apnml")));
-
-		System.out.println(name);
-		StochasticLabelledPetriNetResourceWeightsEditable snet = mine(log, net,
-				new BasicStochasticMinerParametersDefault(), new ProMCanceller() {
-					public boolean isCancelled() {
-						return false;
-					}
-				});
-
-		StochasticLabelledPetriNetResourceWeightsExportPlugin.export(snet,
-				new File("/home/sander/Documents/work/svn/60 - inter-trace stochastics - Jana/" + name + ".slrpn"));
-
-		StochasticLabelledPetriNetResourceWeightsImportPlugin.read(new FileInputStream(
-				new File("/home/sander/Documents/work/svn/60 - inter-trace stochastics - Jana/" + name + ".slrpn")));
-	}
+//	public static void main(String[] args) throws Exception {
+//		String name = "BPI_Challenge_2013_incidents";
+//
+//		PluginContext context = new FakeContext();
+//		XLog log = (XLog) new OpenLogFileLiteImplPlugin().importFile(context,
+//				new File("/home/sander/Documents/work/svn/60 - inter-trace stochastics - Jana/" + name + ".xes.gz"));
+//
+//		AcceptingPetriNet net = AcceptingPetriNetFactory.createAcceptingPetriNet();
+//		net.importFromStream(context, new FileInputStream(
+//				new File("/home/sander/Documents/work/svn/60 - inter-trace stochastics - Jana/" + name + ".apnml")));
+//
+//		System.out.println(name);
+//		StochasticLabelledPetriNetResourceWeightsEditable snet = mine(log, net,
+//				new BasicStochasticMinerParametersDefault(), new ProMCanceller() {
+//					public boolean isCancelled() {
+//						return false;
+//					}
+//				});
+//
+//		StochasticLabelledPetriNetResourceWeightsExportPlugin.export(snet,
+//				new File("/home/sander/Documents/work/svn/60 - inter-trace stochastics - Jana/" + name + ".slrpn"));
+//
+//		StochasticLabelledPetriNetResourceWeightsImportPlugin.read(new FileInputStream(
+//				new File("/home/sander/Documents/work/svn/60 - inter-trace stochastics - Jana/" + name + ".slrpn")));
+//	}
 
 	public static StochasticLabelledPetriNetResourceWeightsEditable mine(XLog xLog, AcceptingPetriNet net,
 			BasicStochasticMinerParameters parameters, ProMCanceller canceller) throws Exception {
